@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { MapContainer, TileLayer, CircleMarker, Popup, useMap, LayersControl, ImageOverlay } from 'react-leaflet';
+import { MapContainer, TileLayer, CircleMarker, Popup, useMap, LayersControl, ImageOverlay} from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
 
 // JAXA Earth API
@@ -49,6 +49,8 @@ function MapUpdater({ center, zoom }: { center: [number, number], zoom: number }
     return null; 
 }
 
+
+
 export default function MapViewer() {
     const [selectedLayer, setSelectedLayer] = useState(SATELLITE_LAYERS[0]);
     const [selectedRegion, setSelectedRegion] = useState(REGIONS[0]);
@@ -95,25 +97,39 @@ export default function MapViewer() {
     };
 
     // 保存ボタンを押したときの処理
-    const handleSaveSnapshot = () => {
+    const handleSaveSnapshot = async() => {
         if (!capturedImage) return;
+        try{
 
-        router.post('/snapshots', {
-            image: capturedImage,
-            commnet: comment
-        }, {
-            //送信成功
-            onSuccess: ()=> {
-                setCapturedImage(null);
-                setComment("");
-                alert("スナップショットを保存しました!");
+            const response = await fetch(capturedImage);
+            const blob = await response.blob();
+
+            //multiparat/form-data
+            const formData = new FormData()
+            formData.append('image', blob, 'snapshot.png');
+
+            if(comment ){
+                formData.append('comment', comment)
             }
 
-        })
-        alert("ここにLaravelへの保存処理を書きます！\nコメント: " + comment);
-        setCapturedImage(null);
-        setComment("");
+            //Inertia.jsを使ってPOST送信
+            router.post('/snapshots', formData, {
+                forceFormData: true,
+                preserveScroll: true,
+                onSuccess: ()=> {
+                    alert("データベースの保存が完了しました");
+                    setCapturedImage(null);
+                    setComment("");
+                }
+            });
+        } catch (error){
+            console.error("画像データの変換中にエラーが発生しました:", error);
+        }        
+
+
     };
+
+
 
     return (
         <div className="flex flex-col gap-4 relative">
