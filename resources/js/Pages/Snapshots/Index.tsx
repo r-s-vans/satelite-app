@@ -14,10 +14,15 @@ interface Snapshot {
     };
 }
 
-export default function Index({ auth, snapshots }: PageProps<{ snapshots: Snapshot[] }>) {
+interface PaginatedData<T>{
+    data: T[];
+    current_page: number;
+    last_page: number;
+    links: { url: string | null; label: string; active: boolean}[];
+}
+export default function Index({ auth, snapshots }: PageProps<{ snapshots: PaginatedData<Snapshot> }>) {
     return (
         <AuthenticatedLayout
-            user={auth.user}
             header={<h2 className="font-semibold text-xl text-gray-800 leading-tight">スナップショット一覧</h2>}
         >
             <Head title="Snapshots" />
@@ -28,7 +33,7 @@ export default function Index({ auth, snapshots }: PageProps<{ snapshots: Snapsh
                     {/* 画像をカード状に並べるグリッドレイアウト */}
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                         
-                        {snapshots.map((snap) => (
+                        {snapshots.data.map((snap) => (
                             <div key={snap.id} className="bg-white overflow-hidden shadow-sm sm:rounded-lg flex flex-col">
                                 {/* 保存された画像を表示 */}
                                 <img src={snap.image_path} alt="Snapshot" className="w-full h-auto border-b border-gray-200" />
@@ -39,7 +44,7 @@ export default function Index({ auth, snapshots }: PageProps<{ snapshots: Snapsh
                                         {snap.comment || '（コメントなし）'}
                                     </p>
                                     <div className="text-sm text-gray-500 flex justify-between border-t pt-2 border-gray-100">
-                                        <span>撮影: {snap.user.name}</span>
+                                        <span>撮影: {snap.user?.name || auth.user.name}</span>
                                         <span>{new Date(snap.created_at).toLocaleDateString()}</span>
                                     </div>
                                 </div>
@@ -47,7 +52,7 @@ export default function Index({ auth, snapshots }: PageProps<{ snapshots: Snapsh
                         ))}
 
                         {/* 1枚もスナップショットがない時のメッセージ */}
-                        {snapshots.length === 0 && (
+                        {snapshots.data.length === 0 && (
                             <div className="col-span-full text-center py-12 text-gray-500 bg-white shadow-sm sm:rounded-lg">
                                 まだスナップショットがありません。ダッシュボードの地図から撮影してみましょう！
                             </div>
