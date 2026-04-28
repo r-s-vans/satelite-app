@@ -1,6 +1,6 @@
 import React from 'react';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
-import { Head, Link } from '@inertiajs/react';
+import { Head, Link, router } from '@inertiajs/react';
 import { PageProps } from '@/types';
 
 // スナップショットのデータ型を定義
@@ -12,6 +12,7 @@ interface Snapshot {
     user: {
         name: string;
     };
+    user_id: number;
 }
 
 interface PaginatedData<T>{
@@ -22,6 +23,17 @@ interface PaginatedData<T>{
 }
 
 export default function Index({ auth, snapshots }: PageProps<{ snapshots: PaginatedData<Snapshot> }>) {
+    //削除ボタン追加
+    const handleDelete = (id: number) => {
+        if(window.confirm("このスナップショットを削除してもよろしいですか")){
+            router.delete(`/snapshots/${id}`, {
+                preserveScroll: true,
+            })
+        }
+    }
+
+    
+    
     return (
         <AuthenticatedLayout
             header={
@@ -47,6 +59,19 @@ export default function Index({ auth, snapshots }: PageProps<{ snapshots: Pagina
                                 {/* カード上部のアクセントライン */}
                                 <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-blue-500/50 to-indigo-500/50 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
 
+                                {snap.user_id === auth.user.id &&(
+                                    <button
+                                    onClick= {()=> handleDelete(snap.id)}
+                                    className="absolute top-3 right-3 z-20"
+                                    title='削除する'
+                                    >
+                                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                        </svg>
+
+                                    </button>
+
+                                )}
                                 {/* 保存された画像を表示 */}
                                 <img 
                                     src={snap.image_path} 

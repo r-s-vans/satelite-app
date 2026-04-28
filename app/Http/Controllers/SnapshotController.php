@@ -31,5 +31,23 @@ class SnapshotController extends Controller
 
         return redirect()->back();
     }
+
+    public function destroy(Snapshot $snapshot)
+    {
+        // 1. セキュリティ対策：他人の画像を勝手に消せないようにする
+        if ($snapshot->user_id !== auth()->id()) {
+            abort(403, 'この画像を削除する権限がありません。');
+        }
+
+        // 2. サーバーから実際の画像ファイル（.png）を削除する
+        $filePath = str_replace('/storage/', '', $snapshot->image_path);
+        Storage::disk('public')->delete($filePath);
+
+        // 3. データベースの記録を削除する
+        $snapshot->delete();
+
+        // 4. 元の画面（一覧画面）に戻る
+        return redirect()->back();
+    }
 }
     
