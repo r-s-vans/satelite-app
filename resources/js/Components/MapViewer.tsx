@@ -188,7 +188,8 @@ export default function MapViewer() {
                     <MapContainer 
                         center={selectedRegion.center as [number, number]} 
                         zoom={selectedRegion.zoom} 
-                        scrollWheelZoom={true} 
+                        scrollWheelZoom={true}
+                        preferCanvas={true}
                         style={{ height: '100%', width: '100%', zIndex: 0 }}
                     >
                         <MapUpdater center={selectedRegion.center as [number, number]} zoom={selectedRegion.zoom} />
