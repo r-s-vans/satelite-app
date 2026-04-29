@@ -1,4 +1,4 @@
-#Earth Data Explorer
+# Earth Data Explorer
 
 「衛星データと研究者の知見をシームレスにつなぐ」をコンセプトにした、地図ベースのコラボレーションツールです。JAXA Earth APIを活用し、任意の場所・日時の衛星画像をWebブラウザ上で直感的に可視化。
 
@@ -6,21 +6,34 @@
 
 <img width="1711" height="963" alt="スクリーンショット 2026-04-29 13 14 17" src="https://github.com/user-attachments/assets/77eede0b-f4d5-4ec0-bdf5-ea01e5370f0f" />
 
----
----
-#使用技術
 
-フロントエンド
+---
+# 使用技術
+
+ - フロントエンド
 React
-バックエンド
+- バックエンド
 PHP
 
-フレームワーク
+- フレームワーク
 Laravel
 
-地図ライブラリ
+- 地図ライブラリ
 React-Leaflet
-DB Postgresql
+- DB 
+Postgresql
+
+---
+# 機能一覧
+- 衛星データ
+- ユーザー登録、ログイン機能
+- Sanpshot機能
+- 地点コメント　地図上の任意の位置をクリックしてピンを立て、コメントを投稿。
+
+---
+# 非機能要件
+
+レスポンシブ対応
 
 
 
