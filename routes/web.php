@@ -26,6 +26,8 @@ Route::middleware('auth')->group(function () {
 
     Route::get('/snapshots', [SnapshotController::class, 'index'])-> name('snapshots.index');
     Route::post('/snapshots', [SnapshotController::class, 'store'])-> name('snapshots.store');
+
+    Route::delete('/snapshots/{snapshot}', [SnapshotController::class, 'destroy'])->name('snapshots.destroy');
 });
 
 require __DIR__.'/auth.php';
